@@ -1,15 +1,17 @@
-import os
-import pkg_resources
 import copy
-import torch
-import numpy as np
+import os
 
-# Paths
-weights_path_dft = pkg_resources.resource_filename('spiga', 'models/weights')
+import numpy as np
+import pkg_resources
+import torch
 
 import spiga.inference.pretreatment as pretreat
-from spiga.models.spiga import SPIGA
 from spiga.inference.config import ModelConfig
+from spiga.models.spiga import SPIGA
+
+# Paths
+weights_path_dft = pkg_resources.resource_filename(
+    'spiga', os.path.join("models", "weights"))
 
 
 class SPIGAFramework:
@@ -38,7 +40,8 @@ class SPIGAFramework:
                                                                   model_dir=weights_path,
                                                                   file_name=self.model_cfg.model_weights)
         else:
-            weights_file = os.path.join(weights_path, self.model_cfg.model_weights)
+            weights_file = os.path.join(
+                weights_path, self.model_cfg.model_weights)
             model_state_dict = torch.load(weights_file)
 
         self.model.load_state_dict(model_state_dict)
@@ -84,7 +87,8 @@ class SPIGAFramework:
         batch_images = self._data2device(batch_images)
         # Batch 3D model and camera intrinsic matrix
         batch_model3D = self.model3d.unsqueeze(0).repeat(len(bboxes), 1, 1)
-        batch_cam_matrix = self.cam_matrix.unsqueeze(0).repeat(len(bboxes), 1, 1)
+        batch_cam_matrix = self.cam_matrix.unsqueeze(
+            0).repeat(len(bboxes), 1, 1)
 
         # SPIGA inputs
         model_inputs = [batch_images, batch_model3D, batch_cam_matrix]
@@ -103,7 +107,8 @@ class SPIGAFramework:
             landmarks = output['Landmarks'][-1].cpu().detach().numpy()
             landmarks = landmarks.transpose((1, 0, 2))
             landmarks = landmarks*self.model_cfg.image_size
-            landmarks_norm = (landmarks - crop_bboxes[:, 0:2]) / crop_bboxes[:, 2:4]
+            landmarks_norm = (
+                landmarks - crop_bboxes[:, 0:2]) / crop_bboxes[:, 2:4]
             landmarks_out = (landmarks_norm * bboxes[:, 2:4]) + bboxes[:, 0:2]
             landmarks_out = landmarks_out.transpose((1, 0, 2))
             features['landmarks'] = landmarks_out.tolist()
