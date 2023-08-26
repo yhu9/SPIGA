@@ -3,9 +3,8 @@ import os
 
 import numpy as np
 import pkg_resources
-import torch
-
 import spiga.inference.pretreatment as pretreat
+import torch
 from spiga.inference.config import ModelConfig
 from spiga.models.spiga import SPIGA
 
@@ -67,7 +66,7 @@ class SPIGAFramework:
         @return: features dict {'landmarks': list with shape (num_bbox, num_landmarks, 2) and x,y referred to image size
                                 'headpose': list with shape (num_bbox, 6) euler->[:3], trl->[3:]
         """
-        batch_crops, crop_bboxes = self.pretreat(image, bboxes)
+        batch_crops, crop_bboxes = self.pretreat(image, bboxes)            
         outputs = self.net_forward(batch_crops)
         features = self.postreatment(outputs, crop_bboxes, bboxes)
         return features
@@ -75,8 +74,8 @@ class SPIGAFramework:
     def pretreat(self, image, bboxes):
         crop_bboxes = []
         crop_images = []
-        for bbox in bboxes:
-            sample = {'image': copy.deepcopy(image),
+        for bbox, img in zip(bboxes, image):
+            sample = {'image': copy.deepcopy(img),
                       'bbox': copy.deepcopy(bbox)}
             sample_crop = self.transforms(sample)
             crop_bboxes.append(sample_crop['bbox'])
