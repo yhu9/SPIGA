@@ -1,13 +1,11 @@
 import numpy as np
-
+import retinaface
 # Third party algorithms. Implementation maintained by SPIGA authors.
 import sort_tracker
-import retinaface
-
+import spiga.demo.analyze.features.face as ft_face
 # My libs
 import spiga.demo.analyze.track.retinasort.config as cfg
 import spiga.demo.analyze.track.tracker as tracker
-import spiga.demo.analyze.features.face as ft_face
 
 
 class RetinaSortTracker(tracker.Tracker):
