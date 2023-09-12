@@ -23,33 +23,11 @@ class RetinaSortTracker(tracker.Tracker):
         self.obj_type = ft_face.Face
         self.attributes += ['bbox', 'face_id', 'key_landmarks']
 
-    def process_frame(self, image, tracked_obj):
+    def process_frame(self, image):
         # tracked_obj = []
         features = self.detector.inference(image)
         bboxes = features['bbox']
-        bboxes = self._code_bbox_idx(bboxes)
-        bboxes_id = self.associator.update(bboxes)
-        bboxes_id, bbox_idx = self._decode_bbox_idx(bboxes_id)
-        final_tracked_obj = []
-        for idx, bbox in enumerate(bboxes_id):
-            founded_flag = False
-            for past_obj in tracked_obj:
-                if past_obj.face_id == bbox[-1]:
-                    past_obj.bbox = bbox[:5]
-                    past_obj = self._update_extra_features(past_obj, features, bbox_idx[idx])
-                    final_tracked_obj.append(past_obj)
-                    tracked_obj.remove(past_obj)
-                    founded_flag = True
-                    break
-
-            if not founded_flag:
-                new_obj = self.obj_type()
-                new_obj.bbox = bbox[:5]
-                new_obj.face_id = bbox[5]
-                new_obj = self._update_extra_features(new_obj, features, bbox_idx[idx])
-                final_tracked_obj.append(new_obj)
-
-        return final_tracked_obj
+        return bboxes
 
     def plot_features(self, image, features, plotter, show_attributes):
         if 'bbox' in show_attributes:

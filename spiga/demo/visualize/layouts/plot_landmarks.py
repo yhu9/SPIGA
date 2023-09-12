@@ -37,7 +37,7 @@ class LandmarkLayout(BasicLayout):
             image = image.transpose(1, 2, 0)
 
         # Plot landmarks
-        canvas = self.draw_circles(image, ldm_vis, color=colors[0], thick=thick)
+        canvas = self.draw_circles(image.astype(np.uint8), ldm_vis, color=colors[0], thick=thick)
         canvas = self.draw_circles(canvas, ldm_notvis, color=colors[1], thick=thick)
         return canvas
 
