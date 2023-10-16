@@ -11,6 +11,7 @@ tmp
 *.h5
 *.egg-info
 *.pt
+*.gif
 
 # Build
 /build
