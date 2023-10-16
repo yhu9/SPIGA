@@ -9,7 +9,6 @@ tmp
 *.mp4
 *.avi
 *.h5
-*.pt
 *.egg-info
 
 # Build
