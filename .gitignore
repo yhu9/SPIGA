@@ -10,6 +10,7 @@ tmp
 *.avi
 *.h5
 *.egg-info
+*.pt
 
 # Build
 /build
